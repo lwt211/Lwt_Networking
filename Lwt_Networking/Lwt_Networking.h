@@ -11,6 +11,12 @@
 #import "YYCache.h"
 
 
+//缓存数据文件夹名
+static NSString *const NetworkResponseName= @"NetworkResponseCache";
+
+//续传数据文件夹名
+static NSString *const resumeDataDoucment = @"resumeDataDoucment";
+
 
 //网络状态
 typedef NS_ENUM(NSUInteger, NetworkStatus) {
