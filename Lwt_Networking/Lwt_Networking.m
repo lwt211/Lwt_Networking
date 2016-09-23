@@ -9,6 +9,9 @@
 #import "Lwt_Networking.h"
 
 
+
+
+
 @interface Lwt_Networking ()
 
 @property (nonatomic,assign,readwrite) NetworkStatus networkStatu;
@@ -114,7 +117,7 @@
 
 - (void  )GET:(NSString *)URL isCache:(BOOL)isCache parameters:(NSDictionary *)parameters success:(Success)success failure:(Failed)failure
 {
-    ShowNetActivity;
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:parameters options:NSJSONWritingPrettyPrinted error:nil];
     
@@ -141,7 +144,7 @@
     
     
     [_httpManager GET:URL parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        HiddenNetActivity;
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         
         if (isCache)
         {
@@ -161,7 +164,7 @@
         }
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        HiddenNetActivity;
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         
         if (failure)
         {
@@ -179,7 +182,7 @@
 - (void)POST:(NSString *)URL isCache:(BOOL)isCache parameters:(NSDictionary *)parameters success:(Success)success failure:(Failed)failure
 {
 
-    ShowNetActivity;
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:parameters options:NSJSONWritingPrettyPrinted error:nil];
     
@@ -210,7 +213,7 @@
         NSLog(@"%f",uploadProgress.completedUnitCount*0.1/uploadProgress.totalUnitCount);
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        HiddenNetActivity;
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         if (isCache)
         {
             if (success && ![cacheData isEqual:responseObject])
@@ -229,7 +232,7 @@
         }
 
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        HiddenNetActivity;
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         if (failure)
         {
             failure(error);
@@ -241,7 +244,7 @@
 #pragma mark - 上传数据
 - (NSURLSessionUploadTask *)uploadWithURL:(NSString *)URL parameters:(NSDictionary *)parameters datas:(NSArray<NSData *> *)datas name:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType progress:(Progress)progress success:(Success)success failure:(Failed)failure
 {
-    ShowNetActivity;
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     
     NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@"POST" URLString:URL parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         [datas enumerateObjectsUsingBlock:^(NSData * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -261,7 +264,7 @@
          }
      }
      completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
-       HiddenNetActivity;
+       [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
          if (error)
          {
             
@@ -289,7 +292,7 @@
 - (NSURLSessionDownloadTask *)downloadWithURL:(NSString *)URL fileName:(NSString *)fileName progress:(Progress)progress Success:(Success)success failure:(Failed)failure;
     
 {
-    ShowNetActivity;
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URL]];
     
     NSURLSessionDownloadTask *downloadTask = [_urlManager downloadTaskWithRequest:request progress:^(NSProgress * _Nonnull downloadProgress) {
@@ -306,7 +309,7 @@
         
     } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
         
-        HiddenNetActivity;
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         if (success)
         {
             success(filePath.absoluteString);
@@ -329,7 +332,7 @@
 
 - (NSURLSessionDownloadTask *)downloadwithResumeData:(NSData *)resumeData fileName:(NSString *)fileName progress:(Progress)progress Success:(Success)success failure:(Failed)failure
 {
-    ShowNetActivity;
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 
   NSURLSessionDownloadTask *downloadTask = [_urlManager downloadTaskWithResumeData:resumeData progress:^(NSProgress * _Nonnull downloadProgress) {
         //下载进度
@@ -342,7 +345,7 @@
         //返回文件位置的URL路径
         return [NSURL fileURLWithPath:fileName];
     } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
-        HiddenNetActivity;
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         if (success)
         {
             success(filePath.absoluteString);
