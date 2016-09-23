@@ -27,7 +27,6 @@ typedef NS_ENUM(NSUInteger, NetworkStatus) {
 };
 
 
-
 /**
  *  网络状态
  */
